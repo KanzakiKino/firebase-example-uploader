@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>Uploader on Firebase</title>
+
+        <script src="/uploader.js"></script>
+
+        <link rel="stylesheet" href="/main.css" type="text/css">
+    </head>
+    <body>
+        <div id="header">
+            <h1>Uploader on Firebase</h1>
+            <h3>Share your files now.</h3>
+        </div>
+
+        <div id="upload" class="box">
+            <h2>Upload</h2>
+            <p>A file will be uploaded <span class="warn">without confirming</span> and must be <span class="warn">1MB or less</span>.</p>
+            <form id="upload-form" method="POST" action="/upload">
+                <input type="file" name="file" onchange="upload();">
+            </form>
+            <p id="upload-status" class="warn"></p>
+        </div>
+
+        <div id="files" class="box">
+            <h2>Recent Files</h2>
+            <ul id="recent-files">
+            </ul>
+        </div>
+    </body>
+</html>

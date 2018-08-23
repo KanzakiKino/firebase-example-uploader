@@ -1,0 +1,11 @@
+/.firebase/
+/.firebaserc
+/.sass-cache/
+/firebase-debug.log
+
+/release
+
+node_modules
+package-lock.json
+
+*.swp
