@@ -18,9 +18,13 @@ var upload = function ()
                 }, 3000 );
 
             } else {
-                var obj = new Object(xmlhttp.responseText);
+                var obj = JSON.parse( xmlhttp.responseText );
                 statusText.innerText = obj.error;
             }
+
+            setTimeout( function () {
+                reloadRecentFiles();
+            }, 1000 );
             form.reset();
             form.style.display = "block";
         }

@@ -11,7 +11,7 @@ function upload ( admin, path, data )
 function register ( admin, path, filename )
 {
     const ref = admin.database().ref( "files/"+path );
-    ref.transaction( ref => {
+    return ref.transaction( ref => {
         if ( ref === null ) {
             return filename;
         }
@@ -22,7 +22,8 @@ function register ( admin, path, filename )
 exports.exec = function ( admin, req, res )
 {
     if ( req.method !== "POST" ) {
-        throw new Object({error: "unexpected request"});
+        res.status(405).send( {error: "unexpected request"} );
+        return;
     }
 
     const savename = Date.now().toString(10);
@@ -34,20 +35,23 @@ exports.exec = function ( admin, req, res )
         if ( fieldname !== "file" || saved ) {
             throw new Object({error:"unknown parameter"});
         }
+        saved = true;
         file.on( "data", ( data ) => {
             if ( data.length > 1024*1024 ) {
-                throw new Object({error:"the file is too big"});
+                res.status(400).send({error:"the file is too big"});
+                return;
             }
-            upload( admin, savename, data ).
+            return upload( admin, savename, data ).
                 then( e => {
-                    register( admin, savename, filename );
-                    res.status(200).send( {size:data.length} );
-                    return e;
-                } ).catch ( e => {
-                    throw new Object({error:e.message});
-                } );
+                    return register( admin, savename, filename ).
+                        then( e => {
+                            res.status(200).send( {size:data.length} );
+                            return e;
+                        } ).
+                        errorResponse( res, 400 );
+                } ).errorResponse( res, 400 );
         } );
-        saved = true;
     } );
+
     files.end( req.rawBody );
 };

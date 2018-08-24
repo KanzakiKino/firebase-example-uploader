@@ -4,20 +4,24 @@ const functions = require( "firebase-functions" );
 const admin     = require( "firebase-admin" );
 admin.initializeApp();
 
+Promise.prototype.errorResponse = function ( res, htret )
+{
+    this.catch( e => {
+        res.status(htret).send( e );
+    } );
+};
+
 exports.download = functions.https.onRequest( (req,res) =>
 {
-    try {
-        require( "./download" ).exec( admin, req, res );
-    } catch ( e ) {
-        res.status(405).send( e );
-    }
+    require( "./download" ).exec( admin, req, res );
 } );
 
 exports.upload = functions.https.onRequest( (req,res) =>
 {
-    try {
-        require( "./upload" ).exec( admin, req, res );
-    } catch ( e ) {
-        res.status(405).send( e );
-    }
+    require( "./upload" ).exec( admin, req, res );
+} );
+
+exports.files = functions.https.onRequest( (req,res) =>
+{
+    require( "./files" ).exec( admin, req, res );
 } );
